@@ -1,3 +1,4 @@
+import { IdGenerator } from './../service/IdGenerator';
 import { ProductDatabase } from "../database/ProductDatabase"
 import { CreateProductInputDTO, CreateProductOutputDTO } from "../dtos/product/createProduct.dto"
 import { GetProductsInputDTO, GetProductsOutputDTO } from "../dtos/product/getProducts.dto"
@@ -6,7 +7,8 @@ import { Product } from "../models/Product"
 
 export class ProductBusiness {
   constructor(
-    private productDatabase: ProductDatabase
+    private productDatabase: ProductDatabase,
+    private idGenerator : IdGenerator,
   ) { }
 
   public getProducts = async (
@@ -35,14 +37,14 @@ export class ProductBusiness {
   public createProduct = async (
     input: CreateProductInputDTO
   ): Promise<CreateProductOutputDTO> => {
-    const { id, name, price } = input
+    const { name, price } = input
 
-    const productDBExists = await this.productDatabase.findProductById(id)
+    //const productDBExists = await this.productDatabase.findProductById()
 
-    if (productDBExists) {
+   /*  if (productDBExists) {
       throw new BadRequestError("'id' já existe")
-    }
-
+    } */
+    const id = this.idGenerator.generateId()
     const newProduct = new Product(
       id,
       name,
